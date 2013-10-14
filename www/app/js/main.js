@@ -29,7 +29,7 @@ var stats, scene, renderer, composer;
 
 			// put a camera in the scene
 			camera	= new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
-			camera.position.set(0, 0, 5);
+			camera.position.set(0, 0, -500);
 			scene.add(camera);
 
 			// create a camera contol
@@ -62,17 +62,17 @@ var stats, scene, renderer, composer;
 			var material	= new THREE.MeshNormalMaterial();
 			var mesh	= new THREE.Mesh( geometry, material ); 
 			scene.add( mesh );*/
-			var geometry = new THREE.CylinderGeometry( 0, 10, 100, 3 );
+			var geometry = new THREE.CylinderGeometry( 0, 1, 10, 3 );
 			//geometry.applyMatrix( new THREE.Matrix4().makeRotationFromEuler( new THREE.Vector3( Math.PI / 2, Math.PI, 0 ) ) );
 
 			var material = new THREE.MeshNormalMaterial();
 
-			for ( var i = 0; i < 1000; i ++ ) {
+			for ( var i = 0; i < 100; i ++ ) {
 
 				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.x = Math.random() * 4000 - 2000;
-				mesh.position.y = Math.random() * 4000 - 2000;
-				mesh.position.z = Math.random() * 4000 - 2000;
+				mesh.position.x = Math.random() * 400 - 200;
+				mesh.position.y = Math.random() * 400 - 200;
+				mesh.position.z = Math.random() * 400 - 200;
 				mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 2;
 				scene.add( mesh );
 
