@@ -4,18 +4,18 @@ var Particles = function(){
     }
 
     
+    var nbParticles = 150;
 
-    var geometry = new THREE.CylinderGeometry( 0, 1, 10, 3 );
-    //geometry.applyMatrix( new THREE.Matrix4().makeRotationFromEuler( new THREE.Vector3( Math.PI / 2, Math.PI, 0 ) ) );
 
-    var material = new THREE.MeshNormalMaterial();
+    var geometry = new THREE.CylinderGeometry( 1, 0, 30, 5 );
+    var material = new THREE.MeshBasicMaterial();
 
     var obj = [];
-    for ( var i = 0; i < 100; i ++ ) {
+    for ( var i = 0; i < nbParticles; i ++ ) {
 
         var mesh = new THREE.Mesh( geometry, material );
         mesh.position.x = Math.random() * 400 - 200;
-        mesh.position.y = Math.random() * 400 - 200;
+        mesh.position.y = Math.random() * 2400 - 2000;
         mesh.position.z = Math.random() * 400 - 200;
         mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 2;
         scene.add( mesh );
@@ -29,7 +29,15 @@ var Particles = function(){
     particles.animate = function(){
         var l = obj.length;
         for ( var i = 0; i < l; i ++ ) {
-            obj[i].position.y += 1;
+            if(obj[i].position.y < 100){
+                obj[i].position.y += k.particleSpeed;    
+            } else {
+                obj[i].position.y = -1000;    
+                obj[i].position.x = Math.random() * 400 - 200;
+                obj[i].position.z = Math.random() * 400 - 200;
+            }
+            
+
         }
     }
 
