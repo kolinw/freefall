@@ -39,6 +39,14 @@ window.onload = function(){
             setTimeout(function(){
                 k.animParticles = true;
             }, delayParticles);
+
+            // random shake camera
+            setInterval(function(){
+                if(Math.random() > 0.5){
+                    console.log('shake');
+                    cam.shake();    
+                }
+            }, 1000);
             
 
             first = false;
@@ -125,7 +133,7 @@ var Freefall = (function(){
         }
 
         // LIGHT
-        var light   = new THREE.AmbientLight( Math.random() * 0xffffff );
+        var light   = new THREE.AmbientLight( 0x0000FF );
         scene.add( light );
 
 

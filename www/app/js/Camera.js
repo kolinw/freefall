@@ -46,37 +46,41 @@ var Camera = function(){
         var originPos = camera.position;
 
         var delta = function(){ return -k.particleSpeed/4+Math.random()*k.particleSpeed/2; };
+        
+        for(var i = 1; i <= nbShake; i++){
+            if( i!=nbShake ) {
+                new TweenMax(camera.position, 0.1,{
+                    z: camera.position.z+delta(),
+                    x: camera.position.x+delta(),
+                    ease: Expo.easeInOut,
+                    delay: i*0.1
+                });
+            } else {
+                // reset cam to original position
+                var t = new TweenMax(camera.position, 0.1, {
+                    z: originPos.z,
+                    x: originPos.x,
+                    ease: Expo.easeInOut,
+                    delay: i*0.1
+                });
+                t.eventCallback("onComplete", function(){
+                    console.log('end');
+                    k.shake = false;
+                });
+            }
+        };
 
-        var t1 = new TweenMax(camera.position, 0.1,{
-            repeat: nbShake-1,
-            y: camera.position.y+delta(),
-            x: camera.position.x+delta(),
-            delay: Math.random()*0.5,
-            ease: Expo.easeInOut
-        });
+        // var t2 = new TweenMax(camera.position, 0.1,{
+        //     z: originPos.z,
+        //     x: originPos.x,
+        //     delay: (nbShake+1) * .1,
+        //     ease: Expo.easeInOut
+        // });
 
         
-        // for(var i = 0; i < nbShake; i++){
-        //     console.log(i,i*0.1);
-        //     setTimeout(function(){
-        //         var t = new TweenMax(camera.position, 0.1,{
-        //             y: camera.position.y+delta(),
-        //             x: camera.position.x+delta(),
-        //             ease: Expo.easeInOut
-        //         });
-        //     },i*0.1);
-        // }
+        
 
-        var t2 = new TweenMax(camera.position, 0.1,{
-            y: originPos.y,
-            x: originPos.x,
-            delay: (nbShake+1) * .1,
-            ease: Expo.easeInOut
-        });
-        t2.eventCallback("onComplete", function(){
-            console.log('end');
-            k.shake = false;
-        });
+        
     }
 
     
