@@ -8,8 +8,10 @@ var Constantes = function () {
     this.numberOfRays =  100;
     
     this.cameraX = 0;
-    this.cameraY = 0;
-    this.cameraZ = -1000;
+    this.cameraY = 300;
+    this.cameraZ = 500;
+
+    this.animParticles = false;
     
     Constantes.instance = this;
 };
@@ -19,7 +21,9 @@ var k = new Constantes();
 window.onload = function(){
     var gui = new dat.GUI();
     var control_rays = gui.add(k, 'numberOfRays', 0, 100).name('nb of rays');
-    var control_cameraZ = gui.add(k, 'cameraZ', -5000, -100).step(100).name('camera z');
+    var control_particles = gui.add(k, 'animParticles').name('animated particles');
+
+    var control_cameraZ = gui.add(k, 'cameraZ', -200, 200).step(1).name('camera z');
     control_cameraZ.onChange(function(value) {
         var cam = new Camera();
         cam.position.z = value;
@@ -36,24 +40,7 @@ window.onload = function(){
     });
 };
 
-var Camera = function(){
-    if (typeof Camera.instance === 'object') {
-        return Camera.instance;
-    }
 
-    var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000 );
-    camera.position.set(k.cameraX, k.cameraY, k.cameraZ);
-    camera.lookAt( scene.position );
-
-    camera.start = function(){
-        camera.position.y = Math.sin(camera.stepRotate) * 500;
-        camera.position.z = Math.cos(camera.stepRotate) * 500;
-    }
-
-    Camera.instance = camera;
-
-    return camera;
-}
 
 var Freefall = (function(){
     var stats, scene, renderer, composer;
@@ -92,7 +79,7 @@ var Freefall = (function(){
         scene.add(camera);
 
         // create a camera contol
-        cameraControls  = new THREEx.DragPanControls(camera);
+        //cameraControls  = new THREEx.DragPanControls(camera);
 
         // transparently support window resize
         THREEx.WindowResize.bind(renderer, camera);
@@ -124,21 +111,7 @@ var Freefall = (function(){
         var material    = new THREE.MeshNormalMaterial();
         var mesh    = new THREE.Mesh( geometry, material ); 
         scene.add( mesh );*/
-        var geometry = new THREE.CylinderGeometry( 0, 1, 10, 3 );
-        //geometry.applyMatrix( new THREE.Matrix4().makeRotationFromEuler( new THREE.Vector3( Math.PI / 2, Math.PI, 0 ) ) );
-
-        var material = new THREE.MeshNormalMaterial();
-
-        for ( var i = 0; i < 100; i ++ ) {
-
-            var mesh = new THREE.Mesh( geometry, material );
-            mesh.position.x = Math.random() * 400 - 200;
-            mesh.position.y = Math.random() * 400 - 200;
-            mesh.position.z = Math.random() * 400 - 200;
-            mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 2;
-            scene.add( mesh );
-
-        }
+        var particles = new Particles();
 
         // SKYBOX
         var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
@@ -176,6 +149,7 @@ var Freefall = (function(){
         // - it has to be at the begining of the function
         // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
         requestAnimationFrame( animate );
+        TWEEN.update();
 
         // do the render
         render();
@@ -191,8 +165,14 @@ var Freefall = (function(){
 
         // update camera controls
         //cameraControls.update();
-        var cam = new Camera();
-        cam.lookAt( scene.position);
+        // var cam = new Camera();
+        // cam.lookAt( scene.position);
+
+        // animation of particles
+        if(k.animParticles){
+            var particles = new Particles();
+            particles.animate();
+        }
 
         // animation of all objects
         /*for( var i = 0; i < scene.objects.length; i ++ ){
@@ -218,4 +198,19 @@ var Freefall = (function(){
     }
 })();
 
+var first = true;
 
+
+window.addEventListener('click',function(){
+    if(first){
+        // mouvement de caméra
+        var cam = new Camera();
+        cam.start();   
+        // animation des particules
+        k.animParticles = true;
+
+        first = false;
+
+    }
+    
+})
