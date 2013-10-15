@@ -32,7 +32,12 @@ window.onload = function(){
         if(first){
             // mouvement de caméra
             var cam = new Camera();
-            cam.start();   
+            cam.start();
+            var part = new Particles();
+            var sounds = new Sound();
+
+            // Lecture son
+            sounds.fall();
 
             // animation des particules
             var delayParticles = 1000;
@@ -43,11 +48,14 @@ window.onload = function(){
             // random shake camera
             setInterval(function(){
                 if(Math.random() > 0.5){
-                    console.log('shake');
                     cam.shake();    
                 }
             }, 1000);
-            
+
+            setTimeout(function(){
+                cam.fall();
+                part.speedUp();
+            },2000);            
 
             first = false;
 
@@ -55,7 +63,7 @@ window.onload = function(){
     });
 
     var control_particles = gui.add(k, 'animParticles').name('animated particles').listen();
-    var controle_speed = gui.add(k, 'particleSpeed', 0, 50).name('particles speed').step(1);
+    var controle_speed = gui.add(k, 'particleSpeed', 0, 50).name('particles speed').step(1).listen();
 
     var control_shake = gui.add(k, 'shake').listen();
     control_shake.onChange(function(value) {
@@ -68,7 +76,7 @@ window.onload = function(){
         var cam = new Camera();
         cam.position.z = value;
     });
-    var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y');
+    var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y').listen();
     control_cameraY.onChange(function(value) {
         var cam = new Camera();
         cam.position.y = value;
@@ -80,31 +88,23 @@ window.onload = function(){
     });
 };
 
-
-
 var Freefall = (function(){
-    var stats, scene, renderer, composer;
-    var camera, cameraControl;
 
-    if( !init() )   animate();
+	if( !init() )   animate();
 
-    // init the scene
-    function init(){
+	function init(){
 
-        if( Detector.webgl ){
-            renderer = new THREE.WebGLRenderer({
-                antialias       : true, // to get smoother output
-                preserveDrawingBuffer   : true,  // to allow screenshot
-                clearAlpha: 0
-            });
-        }else{
-            Detector.addGetWebGLMessage();
-            return true;
-        }
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        document.getElementById('container').appendChild(renderer.domElement);
+		window.sounds = new Sound();
 
-        // add Stats.js - https://github.com/mrdoob/stats.js
+		renderer = new THREE.WebGLRenderer({
+            antialias       : true, // to get smoother output
+            preserveDrawingBuffer   : true,  // to allow screenshot
+            clearAlpha: 0
+        });
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		// add Stats.js - https://github.com/mrdoob/stats.js
         stats = new Stats();
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.bottom   = '0px';
@@ -120,55 +120,28 @@ var Freefall = (function(){
         var camera = new Camera();
         scene.add(camera);
 
-        // create a camera contol
-        //cameraControls  = new THREEx.DragPanControls(camera);
-
-        // transparently support window resize
-        THREEx.WindowResize.bind(renderer, camera);
-        // allow 'p' to make screenshot
-        THREEx.Screenshot.bindKey(renderer);
-        // allow 'f' to go fullscreen where this feature is supported
-        if( THREEx.FullScreen.available() ){
-            THREEx.FullScreen.bindKey();
-        }
-
         // LIGHT
         var light   = new THREE.AmbientLight( 0x0000FF );
         scene.add( light );
 
-
         // ADD PARTICLES TO THE SCENE
-        var particles = new Particles();
-        // ADD PLAN TO THE SCENE
+		var particles = new Particles();
+
+		// ADD PLAN TO THE SCENE
         window.plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 10, 10), new THREE.MeshBasicMaterial({color: 0x6DD5F7}));
         plane.position = new THREE.Vector3(0,-5000,0);
         plane.rotation.x = -Math.PI*.5
         scene.add(plane);
 
-        // define the stack of passes for postProcessing
-        composer = new THREE.EffectComposer( renderer );
-        renderer.autoClear = false;
+		/*composer = new THREE.EffectComposer( renderer );
+		renderer.autoClear = false;
 
-        var renderModel = new THREE.RenderPass( scene, camera );
-        composer.addPass( renderModel );
+		var renderModel = new THREE.RenderPass( scene, camera );
+		composer.addPass( renderModel );*/
 
-        // var effectBloom = new THREE.BloomPass( 1.5 );
-        // composer.addPass( effectBloom );
+	};
 
-        var effectScreen= new THREE.ShaderPass( THREE.ShaderExtras[ "screen" ] );
-        effectScreen.renderToScreen = true;
-        composer.addPass( effectScreen );
-
-        if(k.debug){
-            var axes = new THREE.AxisHelper(50);
-            axes.position = new THREE.Vector3(0,100,0);
-            scene.add(axes);
-        }
-        
-
-    };
-
-    // animation loop
+	// animation loop
     function animate() {
 
         // loop on request animation loop
@@ -183,16 +156,10 @@ var Freefall = (function(){
         stats.update();
     }
 
-    // render the scene
+	// render the scene
     function render() {
         // variable which is increase by Math.PI every seconds - usefull for animation
         var PIseconds   = Date.now() * Math.PI;
-
-
-        // update camera controls
-        //cameraControls.update();
-        // var cam = new Camera();
-        // cam.lookAt( scene.position);
 
         // animation of particles
         if(k.animParticles){
@@ -200,28 +167,14 @@ var Freefall = (function(){
             particles.animate();
         }
 
-        // animation of all objects
-        /*for( var i = 0; i < scene.objects.length; i ++ ){
-            scene.objects[ i ].rotation.y = PIseconds*0.0003 * (i % 2 ? 1 : -1);
-            scene.objects[ i ].rotation.x = PIseconds*0.0002 * (i % 2 ? 1 : -1);
-        }*/
-        // animate DirectionalLight
-        /*scene.lights.forEach(function(light, idx){
-            if( light instanceof THREE.DirectionalLight === false ) return;
-            var ang = 0.0005 * PIseconds * (idx % 2 ? 1 : -1);
-            light.position.set(Math.cos(ang), Math.sin(ang), Math.cos(ang*2)).normalize();                          
-        });*/
-        // animate PointLights
-        /*scene.lights.forEach(function(light, idx){
-            if( light instanceof THREE.PointLight === false )   return;
-            var angle   = 0.0005 * PIseconds * (idx % 2 ? 1 : -1) + idx * Math.PI/3;
-            light.position.set(Math.cos(angle)*3, Math.sin(angle*3)*2, Math.cos(angle*2)).normalize().multiplyScalar(2);
-        });*/
-
         // actually render the scene
-        renderer.clear();
-        composer.render();
+        /*renderer.clear();
+        composer.render();*/
+
+        var cam = new Camera();
+        renderer.render(scene, cam);
+
     }
+
+	render();
 })();
-
-

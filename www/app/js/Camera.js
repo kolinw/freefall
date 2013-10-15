@@ -32,7 +32,7 @@ var Camera = function(){
             });
             tween.eventCallback("onUpdate", function(){
                 pos = new THREE.Vector3(position.x,position.y,position.z);
-                console.log('update', pos);
+                //console.log('update', pos);
                 camera.position = pos;
                 camera.lookAt(startPos);
             });
@@ -64,7 +64,7 @@ var Camera = function(){
                     delay: i*0.1
                 });
                 t.eventCallback("onComplete", function(){
-                    console.log('end');
+                    //console.log('end');
                     k.shake = false;
                 });
             }
@@ -78,9 +78,17 @@ var Camera = function(){
         // });
 
         
-        
+    }
 
-        
+    camera.fall = function(){
+        console.log(camera.position);
+        var t = new TweenLite(camera.position, 5,{
+            y: 500,
+            ease: Expo.easeInOut
+        });
+        t.eventCallback("onComplete", function(){
+            console.log('end fall');
+        });
     }
 
     

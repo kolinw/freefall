@@ -1,43 +1,30 @@
-<!doctype html>
 <html>
-    <head>
-        <title>learningthree.js boiler plate for three.js</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        
-            
-        <script src="vendor/three.js/Three.js"></script>
-        <script src="vendor/three.js/Detector.js"></script>
-        <!--<script src="vendor/three.js/three.min.js"></script>-->
-        <!-- https://github.com/mrdoob/stats.js -->
-        <script src="vendor/three.js/Stats.js"></script>
+	<head>
+		<title>EXPERIMENT</title>
+		<style>canvas { width: 100%; height: 100% }</style>
 
-        <script src="vendor/threex/THREEx.screenshot.js"></script>
-        <script src="vendor/threex/THREEx.FullScreen.js"></script>
-        <script src="vendor/threex/THREEx.WindowResize.js"></script>
-        <!--<script src="vendor/threex.dragpancontrols.js"></script>-->
+		<link  href="css/normalize.css" rel="stylesheet"/>
+        <link  href="css/main.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<script src="vendor/three.js/three.min.js"></script>
+		<script src="vendor/three.js/Stats.js"></script>
 
-        <script src="vendor/three.js/ShaderExtras.js"></script>
-        <script src="vendor/three.js/postprocessing/EffectComposer.js"></script>
-        <script src="vendor/three.js/postprocessing/RenderPass.js"></script>
-        <script src="vendor/three.js/postprocessing/BloomPass.js"></script>
-        <script src="vendor/three.js/postprocessing/ShaderPass.js"></script>
-        <script src="vendor/three.js/postprocessing/MaskPass.js"></script>
+        <script src="vendor/three.js/js/postprocessing/EffectComposer.js"></script>
+        <script src="vendor/three.js/js/postprocessing/RenderPass.js"></script>
+        <script src="vendor/three.js/js/postprocessing/BloomPass.js"></script>
+        <script src="vendor/three.js/js/postprocessing/ShaderPass.js"></script>
+        <script src="vendor/three.js/js/postprocessing/MaskPass.js"></script>
+        <script src="vendor/three.js/js/shaders/CopyShader.js"></script>
 
-        <script src="vendor/dat.gui.min.js"></script>
+		<script src="vendor/dat.gui.min.js"></script>
         <script src="vendor/TweenLite.min.js"></script>
         <script src="vendor/TweenMax.min.js"></script>
         <script src="vendor/EasePack.min.js"></script>
 
-        <link  href="css/normalize.css" rel="stylesheet"/>
-        <link  href="css/main.css" rel="stylesheet"/>
-    </head>
-<body>
-    <!-- three.js container -->
-        <div id="container"></div>
-
-    <script src="js/Camera.js"></script>
-    <script src="js/Particles.js"></script>
-    <script src="js/main.js"></script>
-</body>
+        <script src="js/Sound.js"></script>
+		<script src="js/Camera.js"></script>
+	    <script src="js/Particles.js"></script>
+		<script src="js/main.js"></script>
+	</body>
 </html>

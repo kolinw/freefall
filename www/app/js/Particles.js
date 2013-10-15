@@ -4,7 +4,7 @@ var Particles = function(){
     }
 
     
-    var nbParticles = 150;
+    var nbParticles = 100;
 
 
     var geometry = new THREE.CylinderGeometry( 1, 0, 30, 5 );
@@ -39,6 +39,19 @@ var Particles = function(){
             
 
         }
+    }
+
+    particles.speedUp = function(dest,duration){
+        var dest = dest || 50;
+        var duration = duration || 15;
+
+        var t = new TweenMax(k, duration,{
+            particleSpeed: dest,
+            ease: Expo.quadInOut
+        });
+        t.eventCallback("onComplete", function(){
+            console.log('end speedup');
+        });
     }
 
     Particles.instance = particles;
