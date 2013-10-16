@@ -75,6 +75,11 @@ body, html {
 	bottom: 20%;
 	margin-left:-148px;
 	margin-top:-66px;
+	-webkit-transition: all 0.4s;
+}
+#go:hover {
+	-webkit-transform: scale(1.1);
+	-webkit-transition: all 0.4s;
 }
 
 #go.exit {
