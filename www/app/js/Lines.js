@@ -8,7 +8,8 @@ var Lines = function(){
 
     var lines_array = [];
     var nbLines = 6;
-    var radius = 75;
+    var radius = 125;
+    var group = new THREE.Object3D();
     for(var i = 0; i < nbLines; i++){
         var material = new THREE.LineBasicMaterial({
             color: 0xffffff,
@@ -18,14 +19,15 @@ var Lines = function(){
             linewidth: 2
         });
         var geometry = new THREE.Geometry();
-        var x = Math.cos(i*(2*Math.PI)/nbLines)*100;
-        var z = Math.sin(i*(2*Math.PI)/nbLines)*100;
+        var x = Math.cos(i*(2*Math.PI)/nbLines)*radius;
+        var z = Math.sin(i*(2*Math.PI)/nbLines)*radius;
         geometry.vertices.push(new THREE.Vector3(x, 100, z));
         geometry.vertices.push(new THREE.Vector3(x, -10000, z));
         var line = new THREE.Line(geometry, material);
-        scene.add(line);
+        group.add(line);
         lines_array.push(line);
     }
+    scene.add(group);
 
     lines.animate = function(){
         setInterval(function(){
@@ -40,6 +42,7 @@ var Lines = function(){
                         },80);
                     })();
                 }
+                group.rotation.y += -1+Math.random()*2;
             }
         },300);
     }

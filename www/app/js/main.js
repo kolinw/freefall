@@ -12,7 +12,7 @@ var Constantes = function () {
     this.animParticles = false;
     this.animAsteroids = false;
     this.animIntro = false;
-    this.sound = false;
+    this.sound = true;
 
     this.shake = false;
     this.explode = false;
@@ -26,61 +26,81 @@ var Constantes = function () {
 var k = new Constantes();
 var first = true;
 
-window.onload = function(){
-    var gui = new dat.GUI();
-    
-    
-    
-    var control_intro = gui.add(k, 'animIntro').name('Launch Intro');
-    control_intro.onChange(function(value){
-        if(first){
-            // mouvement de caméra
-            var cam = new Camera();
-            cam.start();
-            var part = new Particles();
-            var sounds = new Sound();
-            var lines = new Lines();
-            var asteroids = new Asteroids();
+var launchExperiment = function(){
+    if(first){
+        // mouvement de caméra
+        var cam = new Camera();
+        cam.start();
+        var part = new Particles();
+        var sounds = new Sound();
+        var lines = new Lines();
+        var asteroids = new Asteroids();
 
-            // Lecture son
-            sounds.fall();
+        // Lecture son
+        sounds.fall();
 
-            // animation des particules
-            var delayParticles = 1000;
-            setTimeout(function(){
-                k.animParticles = true;
-                k.animAsteroids = true;
-            }, delayParticles);
+        // animation des particules
+        var delayParticles = 1000;
+        setTimeout(function(){
+            k.animParticles = true;
+            k.animAsteroids = true;
+        }, delayParticles);
 
+            
+
+        setTimeout(function(){
+            part.speedUp();
+        },2000);
+
+        setTimeout(function(){
+            lines.animate();
+            cam.fall();
+        }, 3000);
+
+        setTimeout(function(){
             // random shake camera
             setInterval(function(){
                 if(Math.random() > 0.5){
-                    asteroids.add();
+                    
+                    asteroids.add();                    
+                    setTimeout(function(){
+                        sounds.comet();
+                    },500)
                     setTimeout(function(){
                         cam.shake();
-                    }, 700);
+                    }, 1000);
                 }
-            }, 1000);
+            }, 2000);
+        }, 4000);
+            
 
-            setTimeout(function(){
-                part.speedUp();
-            },2000);
+        first = false;
 
-            setTimeout(function(){
-                lines.animate();
-                cam.fall();
-            }, 3000);
+    }
+}
 
-            first = false;
+window.onload = function(){
 
-        }
+    var link = document.getElementById("go");
+    link.addEventListener("click",function(e){
+        e.preventDefault();
+        launchExperiment();
+        e.currentTarget.className += "exit";
+    },false);
+
+
+    var gui = new dat.GUI(); 
+    
+    var control_intro = gui.add(k, 'animIntro').name('Launch Intro').listen();
+    control_intro.onChange(function(value){
+        launchExperiment();
     });
 
     var control_sound = gui.add(k, 'sound').name('sound');
 
     var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
     var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
-    var controle_speed = gui.add(k, 'particleSpeed', 0, 50).name('particles speed').step(1).listen();
+    var controle_speed = gui.add(k, 'particleSpeed', 0, 70).name('particles speed').step(1).listen();
 
     var control_shake = gui.add(k, 'shake').listen();
     control_shake.onChange(function(value) {
@@ -218,3 +238,4 @@ var Freefall = (function(){
 
 	render();
 })();
+

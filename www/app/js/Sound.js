@@ -8,66 +8,84 @@ var Sound = function(){
     	src: '/sounds/untitled2.wav'
     },{
         name: 'coyote',
-        src: '/sounds/coyote.wav'
+        src: '/sounds/coyote.wav',
+        end: function(){
+            console.log('oui oui ici');
+            sound.explosion();
+            var particles = new Particles();
+            particles.end();
+            var asteroids = new Asteroids()
+            asteroids.end();
+            var lines = new Lines();
+            lines.end();
+            var e = new Explosion();
+            e.explode();
+        }
+    },{
+        name: 'comet',
+        src: '/sounds/comet.mp3',
+        volume: 0.3
+    },{
+        name: 'bam',
+        src: 'sounds/bam.wav',
+        end: function(){
+            console.log('BOOM');
+            
+        }
     }];
 
-    var loaded = {};
+    // var loaded = {};
 
-    for(var i = 0; i < sources.length; i++){
-    	var audio = document.createElement('audio');
-		var source = document.createElement('source');
-		source.src = sources[i].src;
-		audio.appendChild(source);
+    // for(var i = 0; i < sources.length; i++){
 
-    	loaded[sources[i].name] = audio;
-    }
+    //     var sound = new Howl({
+    //         urls: [sources[i].src],
+    //         volume: sources[i].volume || 1,
+    //         onend: sources[i].end || null,
+    //         loop: false
+    //     })
+
+    //     loaded[sources[i].name] = sound;
+    // }
 
     var sound = {};
 
     sound.fall = function(){
-    	var a = loaded.coyote;
+        var i = 1;
+        var sound = new Howl({
+            urls: [sources[i].src],
+            volume: sources[i].volume || 1,
+            onend: sources[i].end || null,
+            loop: false
+        });
 
         setTimeout(function(){
-            a.play();    
+            if(k.sound) sound.play();
         }, 2000);
-
-        if(!k.sound) a.muted = true;
-
-
-    	a.addEventListener('ended', function() {
-            console.log('THIS IS THE END');
-    		sound.explosion();
-
-            var particles = new Particles();
-            particles.end();
-
-            var asteroids = new Asteroids()
-            asteroids.end();
-
-            var lines = new Lines();
-            lines.end();
-
-    	},false);
-
-        return a;
     }
 
     sound.explosion = function(){
-        var a = loaded.coyote;
+        var i = 3;
+        var sound = new Howl({
+            urls: [sources[i].src],
+            volume: sources[i].volume || 1,
+            onend: sources[i].end || null,
+            loop: false
+        });
 
-        a.play();
+        if(k.sound) sound.play();
+    }
 
-        if(!k.sound) a.muted = true;
+    sound.comet = function(){
+        var i = 2;
+        var sound = new Howl({
+            urls: [sources[i].src],
+            volume: sources[i].volume || 1,
+            onend: sources[i].end || null,
+            loop: false
+        });
 
-        a.addEventListener('ended', function() {
-            console.log('BOOM');
-            
-            var e = new Explosion();
-            e.explode();
-
-        },false);
-
-        return a;
+        if(k.sound) sound.play();
     }
 
     Sound.instance = sound;

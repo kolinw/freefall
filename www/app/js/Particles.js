@@ -7,7 +7,7 @@ var Particles = function(){
     var nbParticles = 100;
 
 
-    var geometry = new THREE.CylinderGeometry( 1, 0, 30, 5 );
+    var geometry = new THREE.CylinderGeometry( 1, 0, 40, 5 );
     var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
 
     var obj = [];
@@ -44,7 +44,7 @@ var Particles = function(){
     }
 
     particles.speedUp = function(dest,duration){
-        var dest = dest || 50;
+        var dest = dest || 70;
         var duration = duration || 15;
 
         // tween opacity
