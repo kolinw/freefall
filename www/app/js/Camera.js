@@ -15,30 +15,36 @@ var Camera = function(){
             y: camera.position.y,
             z: camera.position.z
         };
+        var finalePos = {
+            x: 0,
+            y: 150,
+            z: 1,
+        }
 
+        this.tweenCameraPosition(camPos, finalePos, true);
+    };
 
+    camera.tweenCameraPosition = function(position, positionFinale, lookAtStart, easing){
+        var lookAtStart = lookAtStart || false;
+        var easing = easing || 'Expo.easeInOut';
+        var pos;
+        var pointAt = new THREE.Vector3(0,0,0);
+        // Position the camera to fit
+        var duration = 2;
 
-        var tweenCameraPosition = function(position){
-            var pos;
-            var pointAt = new THREE.Vector3(0,0,0);
-            // Position the camera to fit
-            var duration = 2;
+        var tween = new TweenLite(position, duration, {
+            x: positionFinale.x,
+            y: positionFinale.y,
+            z: positionFinale.z,
+            ease: easing
+        });
+        tween.eventCallback("onUpdate", function(){
+            pos = new THREE.Vector3(position.x,position.y,position.z);
+            //console.log('update', pos);
+            camera.position = pos;
+            if(lookAtStart) camera.lookAt(startPos);
+        });
 
-            var tween = new TweenLite(position, duration, {
-                x: 0,
-                y: 150,
-                z: 1,
-                ease: Expo.easeInOut
-            });
-            tween.eventCallback("onUpdate", function(){
-                pos = new THREE.Vector3(position.x,position.y,position.z);
-                //console.log('update', pos);
-                camera.position = pos;
-                camera.lookAt(startPos);
-            });
-      
-        };
-        tweenCameraPosition(camPos);
     };
 
     camera.shake = function(nbShake){
@@ -76,19 +82,20 @@ var Camera = function(){
         //     delay: (nbShake+1) * .1,
         //     ease: Expo.easeInOut
         // });
-
-        
     }
 
     camera.fall = function(){
-        console.log(camera.position);
-        var t = new TweenLite(camera.position, 5,{
-            y: 500,
-            ease: Expo.easeInOut
-        });
-        t.eventCallback("onComplete", function(){
-            console.log('end fall');
-        });
+        var camPos = {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z
+        };
+        var finalePos = {
+            x: camera.position.x,
+            y: camera.position.y-500,
+            z: camera.position.z
+        }
+        this.tweenCameraPosition(camPos, finalePos, false, 'Quad.easeIn');
     }
 
     

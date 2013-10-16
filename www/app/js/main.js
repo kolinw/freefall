@@ -10,11 +10,14 @@ var Constantes = function () {
     this.cameraZ = 500;
 
     this.animParticles = false;
+    this.animAsteroids = false;
     this.animIntro = false;
+    this.sound = false;
 
     this.shake = false;
 
     this.particleSpeed = 20;
+    this.particleOpacity = 0;
     
     Constantes.instance = this;
 };
@@ -35,6 +38,8 @@ window.onload = function(){
             cam.start();
             var part = new Particles();
             var sounds = new Sound();
+            var lines = new Lines();
+            var asteroids = new Asteroids();
 
             // Lecture son
             sounds.fall();
@@ -43,26 +48,37 @@ window.onload = function(){
             var delayParticles = 1000;
             setTimeout(function(){
                 k.animParticles = true;
+                k.animAsteroids = true;
             }, delayParticles);
 
             // random shake camera
             setInterval(function(){
                 if(Math.random() > 0.5){
-                    cam.shake();    
+                    asteroids.add();
+                    setTimeout(function(){
+                        cam.shake();
+                    }, 700);
                 }
             }, 1000);
 
             setTimeout(function(){
-                cam.fall();
                 part.speedUp();
-            },2000);            
+            },2000);
+
+            setTimeout(function(){
+                lines.animate();
+                cam.fall();
+            }, 3000);
 
             first = false;
 
         }
     });
 
-    var control_particles = gui.add(k, 'animParticles').name('animated particles').listen();
+    var control_sound = gui.add(k, 'sound').name('sound');
+
+    var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
+    var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
     var controle_speed = gui.add(k, 'particleSpeed', 0, 50).name('particles speed').step(1).listen();
 
     var control_shake = gui.add(k, 'shake').listen();
@@ -89,6 +105,7 @@ window.onload = function(){
 };
 
 var Freefall = (function(){
+    var rays = [];
 
 	if( !init() )   animate();
 
@@ -112,7 +129,7 @@ var Freefall = (function(){
 
         // create a scene
         scene = new THREE.Scene();
-        scene.fog = new THREE.Fog( 0xffff00, 100, 16000 );
+        scene.fog = new THREE.Fog( 0x6DD5F7, 600, 1600 );
 
         this.scene = scene;
 
@@ -127,11 +144,43 @@ var Freefall = (function(){
         // ADD PARTICLES TO THE SCENE
 		var particles = new Particles();
 
+        // LINES
+        var lines = new Lines();
+
+        
 		// ADD PLAN TO THE SCENE
-        window.plane = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000, 10, 10), new THREE.MeshBasicMaterial({color: 0x6DD5F7}));
+        var plane = new THREE.Mesh(new THREE.CircleGeometry(7000, 100, 10, 10), new THREE.MeshBasicMaterial({color: 0x6DD5F7}));
         plane.position = new THREE.Vector3(0,-5000,0);
         plane.rotation.x = -Math.PI*.5
         scene.add(plane);
+
+        // EXPLOSION
+        for (var i = 0; i < 300; i++) {
+            
+            var geometry = new THREE.Geometry();
+            
+            var vertex = new THREE.Vector3( Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1 );
+            vertex.normalize();
+            vertex.multiplyScalar( 40 );
+            
+            geometry.vertices.push( vertex );
+            
+            var vertex2 = vertex.clone();
+            vertex2.multiplyScalar( Math.random() * 0.3 + 1 );
+            
+            geometry.vertices.push( vertex2 );
+            
+
+            
+            line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: Math.random() } ) );
+            rays.push(line);
+            
+            scene.add( line );
+        }
+
+
+        // ASTEROiDS
+        var asteroids = new Asteroids();
 
 		/*composer = new THREE.EffectComposer( renderer );
 		renderer.autoClear = false;
@@ -166,6 +215,16 @@ var Freefall = (function(){
             var particles = new Particles();
             particles.animate();
         }
+
+        if(k.animAsteroids){
+            var asteroids = new Asteroids();
+            asteroids.animate();
+
+            for (var i = 0; i < 300; i++) {
+                rays[i].scale.x = rays[i].scale.y = rays[i].scale.z += 0.1;
+            }
+        }
+
 
         // actually render the scene
         /*renderer.clear();

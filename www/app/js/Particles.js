@@ -8,14 +8,14 @@ var Particles = function(){
 
 
     var geometry = new THREE.CylinderGeometry( 1, 0, 30, 5 );
-    var material = new THREE.MeshBasicMaterial();
+    var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
 
     var obj = [];
     for ( var i = 0; i < nbParticles; i ++ ) {
 
         var mesh = new THREE.Mesh( geometry, material );
         mesh.position.x = Math.random() * 400 - 200;
-        mesh.position.y = Math.random() * 2400 - 2000;
+        mesh.position.y = Math.random() * 4400 - 4000;
         mesh.position.z = Math.random() * 400 - 200;
         mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 4 + 2;
         scene.add( mesh );
@@ -30,14 +30,14 @@ var Particles = function(){
         var l = obj.length;
         for ( var i = 0; i < l; i ++ ) {
             if(obj[i].position.y < 100){
-                obj[i].position.y += k.particleSpeed;    
+                obj[i].position.y += k.particleSpeed;
+                obj[i].material.opacity = k.particleOpacity;
             } else {
                 obj[i].position.y = -1000;    
                 obj[i].position.x = Math.random() * 400 - 200;
                 obj[i].position.z = Math.random() * 400 - 200;
+                obj[i].scale.y += 0.06;
             }
-            
-
         }
     }
 
@@ -45,6 +45,12 @@ var Particles = function(){
         var dest = dest || 50;
         var duration = duration || 15;
 
+        // tween opacity
+        new TweenMax(k, duration,{
+            particleOpacity: 1,
+            ease: Expo.quadInOut
+        });
+        // tween speed
         var t = new TweenMax(k, duration,{
             particleSpeed: dest,
             ease: Expo.quadInOut

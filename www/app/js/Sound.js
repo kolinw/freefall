@@ -24,9 +24,15 @@ var Sound = function(){
     sound.fall = function(){
     	var a = loaded.fall;
     	a.play();
+
+        if(!k.sound) a.muted = true;
+
+
     	a.addEventListener('ended', function() {
     		console.log('end sound');
     	},false);
+
+        return a;
     }
 
 	
