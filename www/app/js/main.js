@@ -15,6 +15,7 @@ var Constantes = function () {
     this.sound = false;
 
     this.shake = false;
+    this.explode = false;
 
     this.particleSpeed = 20;
     this.particleOpacity = 0;
@@ -87,6 +88,12 @@ window.onload = function(){
         cam.shake();
     });
 
+    var control_explode = gui.add(k, 'explode').listen();
+    control_explode.onChange(function(value){
+        var e = new Explosion();
+        e.explode();
+    });
+
     var control_cameraZ = gui.add(k, 'cameraZ', -500, 1000).step(1).name('camera z');
     control_cameraZ.onChange(function(value) {
         var cam = new Camera();
@@ -105,7 +112,6 @@ window.onload = function(){
 };
 
 var Freefall = (function(){
-    var rays = [];
 
 	if( !init() )   animate();
 
@@ -155,28 +161,8 @@ var Freefall = (function(){
         scene.add(plane);
 
         // EXPLOSION
-        for (var i = 0; i < 300; i++) {
-            
-            var geometry = new THREE.Geometry();
-            
-            var vertex = new THREE.Vector3( Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1 );
-            vertex.normalize();
-            vertex.multiplyScalar( 40 );
-            
-            geometry.vertices.push( vertex );
-            
-            var vertex2 = vertex.clone();
-            vertex2.multiplyScalar( Math.random() * 0.3 + 1 );
-            
-            geometry.vertices.push( vertex2 );
-            
-
-            
-            line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0x000000, opacity: Math.random() } ) );
-            rays.push(line);
-            
-            scene.add( line );
-        }
+        var explosion = new Explosion();
+        explosion.add();
 
 
         // ASTEROiDS
@@ -219,12 +205,7 @@ var Freefall = (function(){
         if(k.animAsteroids){
             var asteroids = new Asteroids();
             asteroids.animate();
-
-            for (var i = 0; i < 300; i++) {
-                rays[i].scale.x = rays[i].scale.y = rays[i].scale.z += 0.1;
-            }
         }
-
 
         // actually render the scene
         /*renderer.clear();

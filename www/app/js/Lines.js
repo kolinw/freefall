@@ -4,6 +4,7 @@ var Lines = function(){
     }
 
     var lines = {};
+    lines.respawn = true;
 
     var lines_array = [];
     var nbLines = 6;
@@ -12,7 +13,9 @@ var Lines = function(){
         var material = new THREE.LineBasicMaterial({
             color: 0xffffff,
             transparent: true,
-            opacity: 0
+            opacity: 0,
+            fog: true,
+            linewidth: 2
         });
         var geometry = new THREE.Geometry();
         var x = Math.cos(i*(2*Math.PI)/nbLines)*100;
@@ -26,17 +29,23 @@ var Lines = function(){
 
     lines.animate = function(){
         setInterval(function(){
-            var nbLines = Math.ceil(Math.random()*3);
-            for(var i = 0; i< nbLines; i++){
-                (function(){
-                    var lineNumber = Math.ceil(Math.random()*5);
-                    lines_array[lineNumber].material.opacity = 1;
-                    setTimeout(function(){
-                        lines_array[lineNumber].material.opacity = 0;
-                    },80);
-                })();
+            if(lines.respawn){
+                var nbLines = Math.ceil(Math.random()*3);
+                for(var i = 0; i< nbLines; i++){
+                    (function(){
+                        var lineNumber = Math.ceil(Math.random()*5);
+                        lines_array[lineNumber].material.opacity = 1;
+                        setTimeout(function(){
+                            lines_array[lineNumber].material.opacity = 0;
+                        },80);
+                    })();
+                }
             }
         },300);
+    }
+
+    lines.end = function(){
+        lines.respawn = false;
     }
 
     Lines.instance = lines;

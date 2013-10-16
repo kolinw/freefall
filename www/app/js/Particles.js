@@ -26,13 +26,15 @@ var Particles = function(){
         obj: obj
     };
 
+    particles.respawn = true;
+
     particles.animate = function(){
         var l = obj.length;
         for ( var i = 0; i < l; i ++ ) {
-            if(obj[i].position.y < 100){
+            if(obj[i].position.y < 100 ){
                 obj[i].position.y += k.particleSpeed;
                 obj[i].material.opacity = k.particleOpacity;
-            } else {
+            } else if(particles.respawn) {
                 obj[i].position.y = -1000;    
                 obj[i].position.x = Math.random() * 400 - 200;
                 obj[i].position.z = Math.random() * 400 - 200;
@@ -58,6 +60,10 @@ var Particles = function(){
         t.eventCallback("onComplete", function(){
             console.log('end speedup');
         });
+    }
+
+    particles.end = function(){
+        particles.respawn = false;
     }
 
     Particles.instance = particles;

@@ -6,6 +6,9 @@ var Sound = function(){
     var sources = [{
     	name: 'fall',
     	src: '/sounds/untitled2.wav'
+    },{
+        name: 'coyote',
+        src: '/sounds/coyote.wav'
     }];
 
     var loaded = {};
@@ -22,20 +25,50 @@ var Sound = function(){
     var sound = {};
 
     sound.fall = function(){
-    	var a = loaded.fall;
-    	a.play();
+    	var a = loaded.coyote;
+
+        setTimeout(function(){
+            a.play();    
+        }, 2000);
 
         if(!k.sound) a.muted = true;
 
 
     	a.addEventListener('ended', function() {
-    		console.log('end sound');
+            console.log('THIS IS THE END');
+    		sound.explosion();
+
+            var particles = new Particles();
+            particles.end();
+
+            var asteroids = new Asteroids()
+            asteroids.end();
+
+            var lines = new Lines();
+            lines.end();
+
     	},false);
 
         return a;
     }
 
-	
+    sound.explosion = function(){
+        var a = loaded.coyote;
+
+        a.play();
+
+        if(!k.sound) a.muted = true;
+
+        a.addEventListener('ended', function() {
+            console.log('BOOM');
+            
+            var e = new Explosion();
+            e.explode();
+
+        },false);
+
+        return a;
+    }
 
     Sound.instance = sound;
 

@@ -47,11 +47,13 @@ var Camera = function(){
 
     };
 
-    camera.shake = function(nbShake){
+    camera.shake = function(nbShake, force){
         var nbShake = nbShake || 10;
+        var force = force || k.particleSpeed/2;
+        //console.log('shake', nbShake, force);
         var originPos = camera.position;
 
-        var delta = function(){ return -k.particleSpeed/4+Math.random()*k.particleSpeed/2; };
+        var delta = function(){ return -force/2+Math.random()*force; };
         
         for(var i = 1; i <= nbShake; i++){
             if( i!=nbShake ) {
