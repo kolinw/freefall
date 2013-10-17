@@ -8,21 +8,21 @@ var Sound = function(){
     	src: '/sounds/untitled2.wav'
     },{
         name: 'coyote',
-        src: '/sounds/coyote.wav',
+        src: '/sounds/coyote_long.wav',
         end: function(){
+            var asteroids = new Asteroids()
+            asteroids.end();
             setTimeout(function(){
                 sound.explosion();
                 var particles = new Particles();
                 particles.end();
-                var asteroids = new Asteroids()
-                asteroids.end();
                 var lines = new Lines();
                 lines.end();
                 var e = new Explosion();
                 e.explode();
                 var bd = new Bd();
                 bd.pop(window.innerWidth/2, window.innerHeight/2, 3, 300, 1000);
-            }, 3000);
+            }, 2000);
         }
     },{
         name: 'comet',

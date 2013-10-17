@@ -26,13 +26,13 @@ var Camera = function(){
         this.tweenCameraPosition(camPos, finalePos, true);
     };
 
-    camera.tweenCameraPosition = function(position, positionFinale, lookAtStart, easing){
+    camera.tweenCameraPosition = function(position, positionFinale, lookAtStart, easing, duration){
         var lookAtStart = lookAtStart || false;
         var easing = easing || 'Expo.easeInOut';
         var pos;
         var pointAt = new THREE.Vector3(0,0,0);
         // Position the camera to fit
-        var duration = 2;
+        var duration = duration || 2;
 
         var tween = new TweenLite(position, duration, {
             x: positionFinale.x,
@@ -52,13 +52,14 @@ var Camera = function(){
     camera.shake = function(nbShake, force){
         var nbShake = nbShake || 10;
         var force = force || k.particleSpeed/2;
-        //console.log('shake', nbShake, force);
+        console.log('shake', nbShake, force);
         var originPos = camera.position;
 
         var delta = function(){ return -force/2+Math.random()*force; };
         
         for(var i = 1; i <= nbShake; i++){
             if( i!=nbShake ) {
+                console.log('tween shake');
                 new TweenMax(camera.position, 0.1,{
                     z: camera.position.z+delta(),
                     x: camera.position.x+delta(),
@@ -71,10 +72,10 @@ var Camera = function(){
                     z: originPos.z,
                     x: originPos.x,
                     ease: Expo.easeInOut,
-                    delay: i*0.1
+                    delay: nbShake*0.1
                 });
                 t.eventCallback("onComplete", function(){
-                    //console.log('end');
+                    console.log('end');
                     k.shake = false;
                 });
             }
@@ -89,17 +90,29 @@ var Camera = function(){
     }
 
     camera.fall = function(){
-        var camPos = {
+        /*var camPos = {
             x: camera.position.x,
             y: camera.position.y,
             z: camera.position.z
         };
         var finalePos = {
             x: camera.position.x,
-            y: camera.position.y-500,
+            y: camera.position.y-700,
             z: camera.position.z
         }
-        this.tweenCameraPosition(camPos, finalePos, false, 'Quad.easeIn');
+        this.tweenCameraPosition(camPos, finalePos, false, 'Quad.easeIn', 12) ;*/
+
+        var translateCamInterval = setInterval(function(){
+            camera.translateZ(-1);
+        },17);
+
+        setTimeout(function(){
+            clearInterval(translateCamInterval);
+        },12000);
+    }
+
+    camera.goUp = function(){
+        camera.translateZ(-1000);
     }
 
     

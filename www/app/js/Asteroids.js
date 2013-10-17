@@ -30,9 +30,9 @@ var Asteroids = function(){
             sphere.position.z = Math.random()*200-100;
             
 
-            var xScreen = (window.innerWidth/2)+sphere.position.x;
-            var yScreen = (window.innerHeight/2)+sphere.position.z;
-            console.log(xScreen,sphere.position.x, yScreen,sphere.position.z);
+            var xScreen = Math.ceil((window.innerWidth/2)+(sphere.position.x*2));
+            var yScreen = Math.ceil((window.innerHeight/2)+(sphere.position.z*2));
+            //console.log(xScreen,sphere.position.x, yScreen,sphere.position.z);
             var bd = new Bd();
             bd.pop(xScreen, yScreen);
 

@@ -45,11 +45,13 @@ var Explosion = function(){
         // this.mask.position = new THREE.Vector3(0,-1900,0);
         // this.mask.rotation.x = -Math.PI*.5
         // scene.add(this.mask);
-
-        this.plane = new THREE.Mesh(new THREE.CircleGeometry(70, 100, 10, 10), new THREE.MeshBasicMaterial({
-        	color: 0xffffff,
-        	fog: false
-        }));
+        this.material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            fog: false,
+            transparent: true,
+            opacity: 1
+        });
+        this.plane = new THREE.Mesh(new THREE.CircleGeometry(70, 100, 10, 10), this.material);
         this.plane.position = new THREE.Vector3(0,-5150,0);
         this.plane.rotation.x = -Math.PI*.5
         scene.add(this.plane);
@@ -88,7 +90,17 @@ var Explosion = function(){
         	delay: speed-0.1
         });
 
+        var self = this;
+        setTimeout(function(){
+            new TweenMax(self.material, 1.5, {
+                opacity: 0
+            });
+            var bd = new Bd();
+            bd.pop(window.innerWidth/2, window.innerHeight/2, 4, 300, 1000, true);
+        },1000);
+
         //this.group.rotation.y += 0.006;
+        
 
     };
 

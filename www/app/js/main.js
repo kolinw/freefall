@@ -3,7 +3,7 @@ var Constantes = function () {
         return Constantes.instance;
     }
 
-    this.debug = true;
+    this.debug = false;
     
     this.cameraX = 0;
     this.cameraY = 300;
@@ -19,7 +19,7 @@ var Constantes = function () {
     this.shake = false;
     this.explode = false;
 
-    this.particleSpeed = 20;
+    this.particleSpeed = 40;
     this.particleOpacity = 0;
     
     Constantes.instance = this;
@@ -39,18 +39,22 @@ var launchExperiment = function(){
         var lines = new Lines();
         var asteroids = new Asteroids();
         var bd = new Bd();
+        var stars = new Stars();
 
         // Lecture son
         sounds.fall();
 
-        // animation des particules
+        // animation des particules rays
         var delayParticles = 1000;
         setTimeout(function(){
             k.animParticles = true;
             k.animAsteroids = true;
         }, delayParticles);
 
-            
+        // suppression des étoiles
+        setTimeout(function(){
+            stars.remove();
+        },1000);
 
         setTimeout(function(){
             part.speedUp();
@@ -64,7 +68,7 @@ var launchExperiment = function(){
         setTimeout(function(){
             // random shake camera
             cometInterval = setInterval(function(){
-                if(Math.random() > 0.5){
+                if(Math.random() > 0.25){
                     
                     asteroids.add();                    
                     setTimeout(function(){
@@ -92,47 +96,48 @@ window.onload = function(){
         e.currentTarget.className += "exit";
     },false);
 
+    if(k.debug){
+        var gui = new dat.GUI(); 
+        
+        var control_intro = gui.add(k, 'animIntro').name('Launch Intro').listen();
+        control_intro.onChange(function(value){
+            launchExperiment();
+        });
 
-    var gui = new dat.GUI(); 
-    
-    var control_intro = gui.add(k, 'animIntro').name('Launch Intro').listen();
-    control_intro.onChange(function(value){
-        launchExperiment();
-    });
+        var control_sound = gui.add(k, 'sound').name('sound');
 
-    var control_sound = gui.add(k, 'sound').name('sound');
+        var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
+        var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
+        var controle_speed = gui.add(k, 'particleSpeed', 0, 70).name('particles speed').step(1).listen();
 
-    var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
-    var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
-    var controle_speed = gui.add(k, 'particleSpeed', 0, 70).name('particles speed').step(1).listen();
+        var control_shake = gui.add(k, 'shake').listen();
+        control_shake.onChange(function(value) {
+            var cam = new Camera();
+            cam.shake();
+        });
 
-    var control_shake = gui.add(k, 'shake').listen();
-    control_shake.onChange(function(value) {
-        var cam = new Camera();
-        cam.shake();
-    });
+        var control_explode = gui.add(k, 'explode').listen();
+        control_explode.onChange(function(value){
+            var e = new Explosion();
+            e.explode();
+        });
 
-    var control_explode = gui.add(k, 'explode').listen();
-    control_explode.onChange(function(value){
-        var e = new Explosion();
-        e.explode();
-    });
-
-    var control_cameraZ = gui.add(k, 'cameraZ', -500, 1000).step(1).name('camera z');
-    control_cameraZ.onChange(function(value) {
-        var cam = new Camera();
-        cam.position.z = value;
-    });
-    var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y').listen();
-    control_cameraY.onChange(function(value) {
-        var cam = new Camera();
-        cam.position.y = value;
-    });
-    var control_cameraX = gui.add(k, 'cameraX', -500, 500).step(1).name('camera x');
-    control_cameraX.onChange(function(value) {
-        var cam = new Camera();
-        cam.position.x = value;
-    });
+        var control_cameraZ = gui.add(k, 'cameraZ', -500, 1000).step(1).name('camera z');
+        control_cameraZ.onChange(function(value) {
+            var cam = new Camera();
+            cam.position.z = value;
+        });
+        var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y').listen();
+        control_cameraY.onChange(function(value) {
+            var cam = new Camera();
+            cam.position.y = value;
+        });
+        var control_cameraX = gui.add(k, 'cameraX', -500, 500).step(1).name('camera x');
+        control_cameraX.onChange(function(value) {
+            var cam = new Camera();
+            cam.position.x = value;
+        });
+    }
 
 };
 
@@ -157,11 +162,13 @@ var Freefall = (function(){
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(renderer.domElement);*/
 
-		// add Stats.js - https://github.com/mrdoob/stats.js
-        stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.bottom   = '0px';
-        document.body.appendChild( stats.domElement );
+        if(k.debug){
+            // add Stats.js - https://github.com/mrdoob/stats.js
+            stats = new Stats();
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.bottom   = '0px';
+            document.body.appendChild( stats.domElement );    
+        }
 
         // create a scene
         scene = new THREE.Scene();
@@ -174,19 +181,20 @@ var Freefall = (function(){
         scene.add(camera);
 
         // LIGHT
-        var light   = new THREE.AmbientLight( 0x0000FF );
-        scene.add( light );
+        // var light   = new THREE.AmbientLight( 0x6DD5F7 );
+        // scene.add( light );
 
-        hemiLight = new THREE.HemisphereLight( 0x000000, 0x6DD5F7, 1 );
+        hemiLight = new THREE.HemisphereLight( 0x000000, 0x0000FF, 1 );
         hemiLight.color.setHSL( 0.6, 1, 0.6 );
         hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-        hemiLight.position.set( 0, 0, 0 );
-        scene.add( hemiLight ); 
+        hemiLight.position.set( 0, 1000, 0 );
+        scene.add( hemiLight );
 
         var geo = new THREE.CubeGeometry(15000, 15000, 15000);
-        var mat = new THREE.MeshNormalMaterial({
-            color: 0xffffff,
-            side: THREE.BackSide
+        var mat = new THREE.MeshPhongMaterial({
+            color: 0x000000,
+            side: THREE.BackSide,
+            fog: false
         });
         var box = new THREE.Mesh(geo, mat);
         scene.add(box);
@@ -300,8 +308,11 @@ var Freefall = (function(){
         // do the render
         render();
 
-        // update stats
-        stats.update();
+        if(k.debug){
+            // update stats
+            stats.update();    
+        }
+        
     }
 
 	// render the scene

@@ -155,7 +155,7 @@ body {
 #go {
 	position: absolute;
 	left: 50%;
-	bottom: 20%;
+	top: 50%;
 	margin-left:-148px;
 	margin-top:-66px;
 	z-index: 100;

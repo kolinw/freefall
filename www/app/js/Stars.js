@@ -22,7 +22,7 @@ var Stars = function(){
 	    
 	    
 	    var material = new THREE.ParticleBasicMaterial({
-	    	size: 5
+	    	size: 7
 	    });
 	    
 	    this.obj = new THREE.ParticleSystem(geometry, material);
@@ -34,6 +34,10 @@ var Stars = function(){
     stars.animate = function(){
     	this.obj.rotation.y -= 0.00005;
         this.obj.rotation.x -= 0.00005;
+    }
+
+    stars.remove = function(){
+    	scene.remove(this.obj);
     }
     
 

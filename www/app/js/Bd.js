@@ -7,14 +7,15 @@ var Bd = function(){
 
     bd.nbImages = 2;
 
-   	bd.pop = function(left, top, nb, delay, delayRemove){
+   	bd.pop = function(left, top, nb, delay, delayRemove, fill){
    		var left = left || 150+Math.random()*(window.innerWidth-150);
    		var top = top ||  150+Math.random()*(window.innerHeight-150);
 
         var rand = nb || Math.ceil(Math.random()*this.nbImages);
 
         var delay = delay || 0;
-        var delayRemove = delayRemove || 500;
+        var delayRemove = delayRemove || 400;
+        var fill = fill || false;
 
         setTimeout(function(){
         	$('#overlay .truc'+rand).addClass('visible').css({
@@ -23,10 +24,11 @@ var Bd = function(){
 	        });	
         }, delay);
         
-        
-    	setTimeout(function(){
-            $('#overlay .truc'+rand).removeClass('visible');
-        }, delayRemove);    	
+        if(!fill){
+        	setTimeout(function(){
+                $('#overlay .truc'+rand).removeClass('visible');
+            }, delayRemove);    	
+        }
         
    	}
 
