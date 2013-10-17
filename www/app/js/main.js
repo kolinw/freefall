@@ -11,6 +11,8 @@ var Constantes = function () {
 
     this.animParticles = false;
     this.animAsteroids = false;
+    this.animStars = true;
+
     this.animIntro = false;
     this.sound = true;
 
@@ -25,6 +27,7 @@ var Constantes = function () {
 
 var k = new Constantes();
 var first = true;
+var cometInterval;
 
 var launchExperiment = function(){
     if(first){
@@ -35,6 +38,7 @@ var launchExperiment = function(){
         var sounds = new Sound();
         var lines = new Lines();
         var asteroids = new Asteroids();
+        var bd = new Bd();
 
         // Lecture son
         sounds.fall();
@@ -59,7 +63,7 @@ var launchExperiment = function(){
 
         setTimeout(function(){
             // random shake camera
-            setInterval(function(){
+            cometInterval = setInterval(function(){
                 if(Math.random() > 0.5){
                     
                     asteroids.add();                    
@@ -68,6 +72,7 @@ var launchExperiment = function(){
                     },500)
                     setTimeout(function(){
                         cam.shake();
+                        bd.pop();
                     }, 1000);
                 }
             }, 2000);
@@ -129,23 +134,29 @@ window.onload = function(){
         var cam = new Camera();
         cam.position.x = value;
     });
+
 };
+
+var clock = new THREE.Clock();
+var uniforms, composer, camera, plane;
 
 var Freefall = (function(){
 
 	if( !init() )   animate();
 
+
+
 	function init(){
 
 		window.sounds = new Sound();
 
-		renderer = new THREE.WebGLRenderer({
+		/*renderer = new THREE.WebGLRenderer({
             antialias       : true, // to get smoother output
             preserveDrawingBuffer   : true,  // to allow screenshot
             clearAlpha: 0
         });
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(renderer.domElement);
+		document.body.appendChild(renderer.domElement);*/
 
 		// add Stats.js - https://github.com/mrdoob/stats.js
         stats = new Stats();
@@ -160,7 +171,7 @@ var Freefall = (function(){
         this.scene = scene;
 
         // put a camera in the scene
-        var camera = new Camera();
+        camera = new Camera();
         scene.add(camera);
 
         // LIGHT
@@ -173,13 +184,6 @@ var Freefall = (function(){
         // LINES
         var lines = new Lines();
 
-        
-		// ADD PLAN TO THE SCENE
-        var plane = new THREE.Mesh(new THREE.CircleGeometry(7000, 100, 10, 10), new THREE.MeshBasicMaterial({color: 0x6DD5F7}));
-        plane.position = new THREE.Vector3(0,-5000,0);
-        plane.rotation.x = -Math.PI*.5
-        scene.add(plane);
-
         // EXPLOSION
         var explosion = new Explosion();
         explosion.add();
@@ -188,13 +192,87 @@ var Freefall = (function(){
         // ASTEROiDS
         var asteroids = new Asteroids();
 
-		/*composer = new THREE.EffectComposer( renderer );
-		renderer.autoClear = false;
+        // STARS
+        var stars = new Stars();
+        stars.add();
+
+        // BD CHARS
+        var bd = new Bd();
+
+        
+		// ADD PLAN TO THE SCENE
+        uniforms = {
+            fogDensity: { type: "f", value: 0 },
+            fogColor: { type: "v3", value: new THREE.Vector3( 0, 0, 0 ) },
+            time: { type: "f", value: 1.0 },
+            resolution: { type: "v2", value: new THREE.Vector2() },
+            uvScale: { type: "v2", value: new THREE.Vector2( 6, 2 ) },
+            texture1: { type: "t", value: THREE.ImageUtils.loadTexture( "img/textures/cloud.png" ) },
+            texture2: { type: "t", value: THREE.ImageUtils.loadTexture( "img/textures/lavatile.jpg" ) }
+        };
+        
+        uniforms.texture1.value.wrapS = uniforms.texture1.value.wrapT = THREE.RepeatWrapping;
+        uniforms.texture2.value.wrapS = uniforms.texture2.value.wrapT = THREE.RepeatWrapping;
+
+        var material = new THREE.ShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: document.getElementById( 'vertexShader' ).textContent,
+            fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+        } );
+
+        plane = new THREE.Mesh(new THREE.CircleGeometry(7000, 100, 10, 10), material);
+        plane.position = new THREE.Vector3(0,-5000,0);
+        plane.rotation.x = -Math.PI*.5;
+        plane.rotation.z = -Math.PI*.5;
+        scene.add(plane);
+        //var material = new THREE.MeshBasicMaterial();
+
+        // mesh = new THREE.Mesh( new THREE.TorusGeometry( 1000, 500, 30, 30 ), material );
+        // mesh.rotation.x = 0.3;
+        // mesh.position.set(0,-100,0);
+        
+        // scene.add( mesh );
+
+        renderer = new THREE.WebGLRenderer( {
+            antialias       : true, // to get smoother output
+            clearAlpha: 0
+        });
+        document.body.appendChild( renderer.domElement );
+        renderer.autoClear = false;
+
 
 		var renderModel = new THREE.RenderPass( scene, camera );
-		composer.addPass( renderModel );*/
+        var effectBloom = new THREE.BloomPass( 1.25 );
+        var effectFilm = new THREE.FilmPass( 0.75, 0, 0, false ); // dernier param à TRUE = terrible !!
+
+        effectFilm.renderToScreen = true;
+
+        composer = new THREE.EffectComposer( renderer );
+
+        composer.addPass( renderModel );
+        composer.addPass( effectBloom );
+        composer.addPass( effectFilm );
+
+        
+        onWindowResize();
+
+        window.addEventListener( 'resize', onWindowResize, false );
 
 	};
+
+    function onWindowResize( event ) {
+
+        uniforms.resolution.value.x = window.innerWidth;
+        uniforms.resolution.value.y = window.innerHeight;
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        composer.reset();
+
+    }
 
 	// animation loop
     function animate() {
@@ -216,6 +294,9 @@ var Freefall = (function(){
         // variable which is increase by Math.PI every seconds - usefull for animation
         var PIseconds   = Date.now() * Math.PI;
 
+        var delta = 5 * clock.getDelta();
+        uniforms.time.value += 0.2 * delta;
+
         // animation of particles
         if(k.animParticles){
             var particles = new Particles();
@@ -225,17 +306,23 @@ var Freefall = (function(){
         if(k.animAsteroids){
             var asteroids = new Asteroids();
             asteroids.animate();
+
+            //plane.position.y += 10;
+        }
+
+        if(k.animStars){
+            var s = new Stars()
+            s.animate();
         }
 
         // actually render the scene
-        /*renderer.clear();
-        composer.render();*/
+        renderer.clear();
+        composer.render( 0.01 );
 
-        var cam = new Camera();
-        renderer.render(scene, cam);
+        // var cam = new Camera();
+        // renderer.render(scene, cam);
 
     }
 
 	render();
 })();
-

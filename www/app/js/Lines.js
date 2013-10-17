@@ -8,7 +8,7 @@ var Lines = function(){
 
     var lines_array = [];
     var nbLines = 6;
-    var radius = 125;
+    var radius = 200;
     var group = new THREE.Object3D();
     for(var i = 0; i < nbLines; i++){
         var material = new THREE.LineBasicMaterial({
@@ -39,12 +39,12 @@ var Lines = function(){
                         lines_array[lineNumber].material.opacity = 1;
                         setTimeout(function(){
                             lines_array[lineNumber].material.opacity = 0;
-                        },80);
+                        },40);
                     })();
                 }
                 group.rotation.y += -1+Math.random()*2;
             }
-        },300);
+        },200);
     }
 
     lines.end = function(){

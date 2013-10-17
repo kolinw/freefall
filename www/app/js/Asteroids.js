@@ -51,6 +51,7 @@ var Asteroids = function(){
 
     asteroids.end = function(){
         asteroids.respawn = false;
+        clearInterval(cometInterval);
     }
 
     asteroids.obj = asteroids_array;

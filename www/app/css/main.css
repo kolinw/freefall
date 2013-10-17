@@ -68,6 +68,9 @@ body, html {
 	overflow: hidden;
 }
 
+body {
+	background: #000;
+}
 
 #go {
 	position: absolute;
@@ -75,6 +78,7 @@ body, html {
 	bottom: 20%;
 	margin-left:-148px;
 	margin-top:-66px;
+	z-index: 100;
 	-webkit-transition: all 0.4s;
 }
 #go:hover {
@@ -97,3 +101,44 @@ body, html {
 			animation-name: bounceOutDown;
 }
 
+/* DAT.GUI */
+.dg.ac {
+	z-index: 150 !important;
+}
+
+#overlay {
+	position: absolute;
+	top:0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 50;
+}
+
+#overlay img {
+	width: 500px;
+	height: 350px;
+	display: none;
+	position: absolute;
+	left: 50%;
+	margin-left: -250px;
+	top: 50%;
+	margin-top: -175px;
+	-webkit-transition: all 0.4s;
+}
+#overlay img.visible {
+	display: block;
+	-webkit-transition: all 0.4s;
+}
+/*#overlay img.truc1 {
+	background: url('/img/truc1.png') center center no-repeat;
+}
+#overlay img.truc2 {
+	background: url('/img/truc2.png') center center no-repeat;
+}
+#overlay img.truc13 {
+	background: url('/img/truc3.png') center center no-repeat;
+}
+#overlay img.truc4 {
+	background: url('/img/truc4.png') center center no-repeat;
+}*/

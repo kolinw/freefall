@@ -1,6 +1,4 @@
 *~
-*.psd
-*.ai
 .DS_Store
 .sass-cache/
 www/dist/

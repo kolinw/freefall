@@ -10,16 +10,19 @@ var Sound = function(){
         name: 'coyote',
         src: '/sounds/coyote.wav',
         end: function(){
-            console.log('oui oui ici');
-            sound.explosion();
-            var particles = new Particles();
-            particles.end();
-            var asteroids = new Asteroids()
-            asteroids.end();
-            var lines = new Lines();
-            lines.end();
-            var e = new Explosion();
-            e.explode();
+            setTimeout(function(){
+                sound.explosion();
+                var particles = new Particles();
+                particles.end();
+                var asteroids = new Asteroids()
+                asteroids.end();
+                var lines = new Lines();
+                lines.end();
+                var e = new Explosion();
+                e.explode();
+                var bd = new Bd();
+                bd.pop(window.innerWidth/2, window.innerHeight/2, 3, 300);
+            }, 3000);
         }
     },{
         name: 'comet',
@@ -30,7 +33,7 @@ var Sound = function(){
         src: 'sounds/bam.wav',
         end: function(){
             console.log('BOOM');
-            
+
         }
     }];
 
