@@ -8,6 +8,8 @@ var Camera = function(){
     var startPos = new THREE.Vector3(0,-100,-10);
     camera.lookAt( startPos );
 
+    //camera.controls  = new THREEx.DragPanControls(camera);
+
 
     camera.start = function(){
         var camPos = {

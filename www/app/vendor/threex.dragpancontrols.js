@@ -38,7 +38,7 @@ THREEx.DragPanControls.prototype.update	= function(event)
 {
 	this._object.position.x += ( this._mouseX * this.rangeX - this._object.position.x ) * this.speedX;
 	this._object.position.y += ( this._mouseY * this.rangeY - this._object.position.y ) * this.speedY;
-	this._object.lookAt( this.target );
+	//this._object.lookAt( this.target );
 }
 
 THREEx.DragPanControls.prototype._onMouseMove	= function(event)

@@ -7,24 +7,27 @@ var Bd = function(){
 
     bd.nbImages = 2;
 
-   	bd.pop = function(left, top, nb, delay){
+   	bd.pop = function(left, top, nb, delay, delayRemove){
    		var left = left || 150+Math.random()*(window.innerWidth-150);
    		var top = top ||  150+Math.random()*(window.innerHeight-150);
 
         var rand = nb || Math.ceil(Math.random()*this.nbImages);
 
         var delay = delay || 0;
+        var delayRemove = delayRemove || 500;
 
         setTimeout(function(){
         	$('#overlay .truc'+rand).addClass('visible').css({
 	            left: left,
 	            top: top
 	        });	
-        },delay);
+        }, delay);
         
-        setTimeout(function(){
+        
+    	setTimeout(function(){
             $('#overlay .truc'+rand).removeClass('visible');
-        },500);    
+        }, delayRemove);    	
+        
    	}
 
     Bd.instance = bd;

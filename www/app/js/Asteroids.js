@@ -28,7 +28,13 @@ var Asteroids = function(){
             sphere.position.y = -3000;
             sphere.position.x = Math.random()*200-100;
             sphere.position.z = Math.random()*200-100;
-            //console.log(sphere.position.y);
+            
+
+            var xScreen = (window.innerWidth/2)+sphere.position.x;
+            var yScreen = (window.innerHeight/2)+sphere.position.z;
+            console.log(xScreen,sphere.position.x, yScreen,sphere.position.z);
+            var bd = new Bd();
+            bd.pop(xScreen, yScreen);
 
             sphere.scale.x = sphere.scale.y = sphere.scale.z = 0.5;
 

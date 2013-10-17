@@ -35,22 +35,22 @@ var Explosion = function(){
 	    }
 
 	    //position on the floor
-        this.group.translateY(-2000);
+        this.group.translateY(-5200);
         scene.add(this.group);
 
-        var mask = new THREE.Mesh(new THREE.CircleGeometry(70, 100, 10, 10), new THREE.MeshBasicMaterial({
-        	color: 0xffffff,
-        	fog: true
-        }));
-        mask.position = new THREE.Vector3(0,-1900,0);
-        mask.rotation.x = -Math.PI*.5
-        scene.add(mask);
+        // this.mask = new THREE.Mesh(new THREE.CircleGeometry(70, 100, 10, 10), new THREE.MeshBasicMaterial({
+        // 	color: 0xffffff,
+        // 	fog: true
+        // }));
+        // this.mask.position = new THREE.Vector3(0,-1900,0);
+        // this.mask.rotation.x = -Math.PI*.5
+        // scene.add(this.mask);
 
         this.plane = new THREE.Mesh(new THREE.CircleGeometry(70, 100, 10, 10), new THREE.MeshBasicMaterial({
         	color: 0xffffff,
         	fog: false
         }));
-        this.plane.position = new THREE.Vector3(0,-1950,0);
+        this.plane.position = new THREE.Vector3(0,-5150,0);
         this.plane.rotation.x = -Math.PI*.5
         scene.add(this.plane);
     };
@@ -59,6 +59,9 @@ var Explosion = function(){
 
     explosion.explode = function(){
     	var speed = 0.3;
+
+        this.group.position.y = -2000;
+        this.plane.position.y = -1950;
 
     	var c = new Camera();
         c.shake(10, 100);

@@ -72,7 +72,6 @@ var launchExperiment = function(){
                     },500)
                     setTimeout(function(){
                         cam.shake();
-                        bd.pop();
                     }, 1000);
                 }
             }, 2000);
@@ -177,6 +176,22 @@ var Freefall = (function(){
         // LIGHT
         var light   = new THREE.AmbientLight( 0x0000FF );
         scene.add( light );
+
+        hemiLight = new THREE.HemisphereLight( 0x000000, 0x6DD5F7, 1 );
+        hemiLight.color.setHSL( 0.6, 1, 0.6 );
+        hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+        hemiLight.position.set( 0, 0, 0 );
+        scene.add( hemiLight ); 
+
+        var geo = new THREE.CubeGeometry(15000, 15000, 15000);
+        var mat = new THREE.MeshNormalMaterial({
+            color: 0xffffff,
+            side: THREE.BackSide
+        });
+        var box = new THREE.Mesh(geo, mat);
+        scene.add(box);
+
+
 
         // ADD PARTICLES TO THE SCENE
 		var particles = new Particles();
@@ -297,6 +312,9 @@ var Freefall = (function(){
         var delta = 5 * clock.getDelta();
         uniforms.time.value += 0.2 * delta;
 
+
+        //camera.controls.update();
+
         // animation of particles
         if(k.animParticles){
             var particles = new Particles();
@@ -307,7 +325,7 @@ var Freefall = (function(){
             var asteroids = new Asteroids();
             asteroids.animate();
 
-            //plane.position.y += 10;
+            //plane.position.y += 1;
         }
 
         if(k.animStars){

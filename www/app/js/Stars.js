@@ -11,9 +11,11 @@ var Stars = function(){
     	for ( i = 0; i < 10000; i ++ ) {
         
 	        var vertex = new THREE.Vector3();
-	        vertex.x = Math.random() * 2000 - 1000;
-	        vertex.y = Math.random() * 2000 - 1000;
-	        vertex.z = Math.random() * 2000 - 1000;
+	        vertex.x = Math.random() * 200 - 100;
+	        vertex.y = Math.random() * 200 - 100;
+	        vertex.z = Math.random() * 200 - 100;
+
+	        vertex.multiplyScalar( 10 );
 	        
 	        geometry.vertices.push( vertex );
 	    }
@@ -24,6 +26,7 @@ var Stars = function(){
 	    });
 	    
 	    this.obj = new THREE.ParticleSystem(geometry, material);
+	    //this.obj.translateY(-300);
 	    
 	    scene.add(this.obj);
     }

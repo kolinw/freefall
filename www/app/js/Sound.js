@@ -21,7 +21,7 @@ var Sound = function(){
                 var e = new Explosion();
                 e.explode();
                 var bd = new Bd();
-                bd.pop(window.innerWidth/2, window.innerHeight/2, 3, 300);
+                bd.pop(window.innerWidth/2, window.innerHeight/2, 3, 300, 1000);
             }, 3000);
         }
     },{
