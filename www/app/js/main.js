@@ -96,48 +96,49 @@ window.onload = function(){
         e.currentTarget.className += "exit";
     },false);
 
-    if(k.debug){
-        var gui = new dat.GUI(); 
-        
-        var control_intro = gui.add(k, 'animIntro').name('Launch Intro').listen();
-        control_intro.onChange(function(value){
-            launchExperiment();
-        });
+    
+    var gui = new dat.GUI(); 
+    if(!k.debug) gui.close();
+    
+    var control_intro = gui.add(k, 'animIntro').name('Launch Intro').listen();
+    control_intro.onChange(function(value){
+        launchExperiment();
+    });
 
-        var control_sound = gui.add(k, 'sound').name('sound');
+    var control_sound = gui.add(k, 'sound').name('sound');
 
-        var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
-        var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
-        var controle_speed = gui.add(k, 'particleSpeed', 0, 70).name('particles speed').step(1).listen();
+    var control_particles = gui.add(k, 'animParticles').name('anim particles').listen();
+    var control_asteroids = gui.add(k, 'animAsteroids').name('anim asteroids').listen();
+    var controle_speed = gui.add(k, 'particleSpeed', 0, 70).name('particles speed').step(1).listen();
 
-        var control_shake = gui.add(k, 'shake').listen();
-        control_shake.onChange(function(value) {
-            var cam = new Camera();
-            cam.shake();
-        });
+    var control_shake = gui.add(k, 'shake').listen();
+    control_shake.onChange(function(value) {
+        var cam = new Camera();
+        cam.shake();
+    });
 
-        var control_explode = gui.add(k, 'explode').listen();
-        control_explode.onChange(function(value){
-            var e = new Explosion();
-            e.explode();
-        });
+    var control_explode = gui.add(k, 'explode').listen();
+    control_explode.onChange(function(value){
+        var e = new Explosion();
+        e.explode();
+    });
 
-        var control_cameraZ = gui.add(k, 'cameraZ', -500, 1000).step(1).name('camera z');
-        control_cameraZ.onChange(function(value) {
-            var cam = new Camera();
-            cam.position.z = value;
-        });
-        var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y').listen();
-        control_cameraY.onChange(function(value) {
-            var cam = new Camera();
-            cam.position.y = value;
-        });
-        var control_cameraX = gui.add(k, 'cameraX', -500, 500).step(1).name('camera x');
-        control_cameraX.onChange(function(value) {
-            var cam = new Camera();
-            cam.position.x = value;
-        });
-    }
+    var control_cameraZ = gui.add(k, 'cameraZ', -500, 1000).step(1).name('camera z');
+    control_cameraZ.onChange(function(value) {
+        var cam = new Camera();
+        cam.position.z = value;
+    });
+    var control_cameraY = gui.add(k, 'cameraY', -500, 500).step(1).name('camera y').listen();
+    control_cameraY.onChange(function(value) {
+        var cam = new Camera();
+        cam.position.y = value;
+    });
+    var control_cameraX = gui.add(k, 'cameraX', -500, 500).step(1).name('camera x');
+    control_cameraX.onChange(function(value) {
+        var cam = new Camera();
+        cam.position.x = value;
+    });
+    
 
 };
 
