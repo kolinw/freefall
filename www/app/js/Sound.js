@@ -5,10 +5,10 @@ var Sound = function(){
 
     var sources = [{
     	name: 'fall',
-    	src: '/sounds/untitled2.wav'
+    	src: 'sounds/untitled2.wav'
     },{
         name: 'coyote',
-        src: '/sounds/coyote_long.wav',
+        src: 'sounds/coyote_long.wav',
         end: function(){
             var asteroids = new Asteroids()
             asteroids.end();
@@ -26,7 +26,7 @@ var Sound = function(){
         }
     },{
         name: 'comet',
-        src: '/sounds/comet.mp3',
+        src: 'sounds/comet.mp3',
         volume: 0.3
     },{
         name: 'bam',
